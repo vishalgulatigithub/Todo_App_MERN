@@ -1,29 +1,31 @@
-import React from 'react';
-import TodoList from './TodoList';
-import "./App.css";
-import Header from "./components/partials/Header.jsx";
-import {BrowserRouter,Routes,Route} from 'react-router-dom';
-import Home from "./components/Home.jsx";
-import Register from "./components/Register.jsx";
-import Login from "./components/Login.jsx";
-import {useState} from 'react';
+import './App.css';
+import { useEffect } from "react";
+import { BrowserRouter ,Route, Routes} from "react-router-dom";
+import { loadUser } from'./actions/userAction.js'
+import Home from './component/home/home';
+import store from './store.js'
+import LoginSignUp from './component/user/signup';
+import Account from './component/user/account';
+import NotFound from './component/NotFound';
 
 function App() {
-
-  const info= localStorage.getItem('user');
-  const [user,setUser]= useState(JSON.parse(info));
-
+  useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
   return (
-    <>
     <BrowserRouter>
-    <Header/>
     <Routes>
-      <Route path="/" element={<Home/>} />
-      <Route path="/register" element={<Register/>} />
-      <Route path="/login" element={<Login user={user} setUser={setUser} />}/>
+      <Route path="/" element={<Home/>}/>
+      <Route path="/signup_signin" element={<LoginSignUp />}/>
+      <Route path="/account" element={<Account/>}/>
+      <Route path='*'
+          element={ window.location.pathname === "/process/payment" ? null : 
+            <NotFound/>
+          } 
+          />
     </Routes>
+    {/* <Footer/> */}
     </BrowserRouter>
-    </>
   );
 }
 
